@@ -1,4 +1,4 @@
-# Use an official Python runtime as the base image
+# Base image
 FROM python:3.9-slim-buster
 
 # Set the working directory in the container
@@ -16,5 +16,12 @@ COPY . .
 # Expose the port on which the application will run
 EXPOSE 5000
 
-# Set the command to run the application
-CMD ["python", "app.py"]
+# Install MongoDB client
+RUN apt-get update && apt-get install -y mongodb-clients
+
+# Set the environment variables for MongoDB connection
+ENV MONGO_HOST=mongodb
+ENV MONGO_PORT=27017
+
+# Set the command to run the MongoDB service
+CMD mongod --bind_ip_all --smallfiles --nojournal & python app.py
